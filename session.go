@@ -13,10 +13,12 @@ import (
 	"sync/atomic"
 	"time"
 
-	"github.com/getlantern/ema"
-	"github.com/getlantern/idletiming"
-	"github.com/getlantern/mtime"
-	"github.com/getlantern/ops"
+	"github.com/l2dy/plampshade/ema"
+	"github.com/l2dy/plampshade/idletiming"
+	"github.com/l2dy/plampshade/mtime"
+	"github.com/l2dy/plampshade/ops"
+
+	log "github.com/sirupsen/logrus"
 )
 
 var (
@@ -416,9 +418,6 @@ func (s *session) addPadding(b []byte) (int, error) {
 	if l > len(b) {
 		l = len(b)
 	}
-	if log.IsTraceEnabled() {
-		log.Tracef("Adding random padding of length: %d", l)
-	}
 	for i := 0; i < l; i++ {
 		b[i] = 0
 	}
@@ -447,10 +446,6 @@ func (snd *sender) send(frame []byte) (open bool) {
 			snd.lastPing = now
 		}
 		snd.mx.Unlock()
-	}
-
-	if log.IsTraceEnabled() {
-		log.Tracef("Coalesced %d for total of %d", snd.coalesced, snd.coalescedBytes)
 	}
 
 	_, err := snd.writeToWire(snd.sendSessionFrame,

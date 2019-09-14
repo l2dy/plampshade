@@ -206,9 +206,8 @@ import (
 	"net"
 	"time"
 
-	"github.com/getlantern/golog"
-	"github.com/getlantern/mtime"
-	"github.com/oxtoacart/bpool"
+	"github.com/l2dy/plampshade/mtime"
+	"github.com/l2dy/plampshade/bpool"
 )
 
 const (
@@ -258,8 +257,6 @@ const (
 )
 
 var (
-	log = golog.LoggerFor("lampshade")
-
 	// ErrTimeout indicates that an i/o operation timed out.
 	ErrTimeout = &netError{"i/o timeout", true, true}
 	// ErrConnectionClosed indicates that an i/o operation was attempted on a

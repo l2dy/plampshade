@@ -6,7 +6,7 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/getlantern/ops"
+	"github.com/l2dy/plampshade/ops"
 )
 
 var (

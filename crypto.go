@@ -8,7 +8,8 @@ import (
 	"crypto/sha256"
 	"fmt"
 
-	"github.com/Yawning/chacha20"
+	"github.com/aead/chacha20"
+	log "github.com/sirupsen/logrus"
 	"golang.org/x/crypto/chacha20poly1305"
 )
 
@@ -194,7 +195,7 @@ func cipherFor(cipherCode Cipher, secret []byte, iv []byte) (cipher.Stream, erro
 		return nil, nil
 	default:
 		// Unless encryption is disabled, always use ChaCha20 for encrypting length
-		return chacha20.NewCipher(secret[:Cipher(ChaCha20Poly1305).secretSize()], iv)
+		return chacha20.NewCipher(iv, secret[:Cipher(ChaCha20Poly1305).secretSize()])
 	}
 }
 

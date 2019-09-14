@@ -9,7 +9,8 @@ import (
 	"sync"
 	"time"
 
-	"github.com/getlantern/ema"
+	"github.com/l2dy/plampshade/ema"
+	log "github.com/sirupsen/logrus"
 )
 
 const (
@@ -42,7 +43,6 @@ type DialerOpts struct {
 	// RedialSessionInterval - how frequently to redial a new session when
 	// there's no live session, for faster recovery after network failures.
 	// Defaults to 5 seconds.
-	// See https://github.com/getlantern/lantern-internal/issues/2534
 	RedialSessionInterval time.Duration
 
 	// Pool - BufferPool to use (required)
@@ -95,12 +95,12 @@ func NewDialer(opts *DialerOpts) Dialer {
 		idleInterval:          opts.IdleInterval,
 		pingInterval:          opts.PingInterval,
 		redialSessionInterval: opts.RedialSessionInterval,
-		pool:            opts.Pool,
-		cipherCode:      opts.Cipher,
-		serverPublicKey: opts.ServerPublicKey,
-		liveSessions:    liveSessions,
-		numLive:         1, // the nullSession
-		emaRTT:          ema.NewDuration(0, 0.5),
+		pool:                  opts.Pool,
+		cipherCode:            opts.Cipher,
+		serverPublicKey:       opts.ServerPublicKey,
+		liveSessions:          liveSessions,
+		numLive:               1, // the nullSession
+		emaRTT:                ema.NewDuration(0, 0.5),
 	}
 }
 

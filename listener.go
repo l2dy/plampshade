@@ -6,7 +6,9 @@ import (
 	"net"
 	"time"
 
-	"github.com/getlantern/ops"
+	"github.com/l2dy/plampshade/ops"
+
+	log "github.com/sirupsen/logrus"
 )
 
 type listener struct {
@@ -126,15 +128,15 @@ func (l *listener) doOnConn(conn net.Conn) error {
 	// Try to read start sequence
 	_, err := io.ReadFull(conn, initMsg)
 	if err != nil {
-		fullErr := log.Errorf("Unable to read client init msg %v after %v from %v ", err, time.Since(start), conn.RemoteAddr())
-		l.onError(conn, fullErr)
-		return fullErr
+		log.Errorf("Unable to read client init msg %v after %v from %v ", err, time.Since(start), conn.RemoteAddr())
+		l.onError(conn, err)
+		return err
 	}
 	windowSize, maxPadding, cs, err := decodeClientInitMsg(l.serverPrivateKey, initMsg)
 	if err != nil {
-		fullErr := log.Errorf("Unable to decode client init msg from %v: %v", conn.RemoteAddr(), err)
-		l.onError(conn, fullErr)
-		return fullErr
+		log.Errorf("Unable to decode client init msg from %v: %v", conn.RemoteAddr(), err)
+		l.onError(conn, err)
+		return err
 	}
 	startSession(conn, windowSize, maxPadding, l.ackOnFirst, 0, cs.reversed(), nil, l.pool, nil, l.connCh, nil)
 	return nil
