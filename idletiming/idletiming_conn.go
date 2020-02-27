@@ -312,6 +312,28 @@ func (c *IdleTimingConn) Wrapped() net.Conn {
 	return c.conn
 }
 
+// Pause pauses idle timing and returns a function that can be called to unpause it
+func (c *IdleTimingConn) Pause() func() {
+	ticker := time.NewTicker(c.halfIdleTimeout)
+
+	done := make(chan bool)
+	go func() {
+		for {
+			select {
+			case <-ticker.C:
+				c.markActive(1)
+			case <-done:
+				ticker.Stop()
+				return
+			}
+		}
+	}()
+
+	return func() {
+		close(done)
+	}
+}
+
 func (c *IdleTimingConn) markActive(n int) bool {
 	if n > 0 {
 		select {
